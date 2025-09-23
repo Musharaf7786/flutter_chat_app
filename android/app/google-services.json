@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618568288928",
+    "project_id": "musharaf-chatting-app",
+    "storage_bucket": "musharaf-chatting-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618568288928:android:4fd9534e43ed32953bd7c5",
+        "android_client_info": {
+          "package_name": "com.musharafchatapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfxkj8pFCyu79QL4wWvielLo0TD85ioEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
