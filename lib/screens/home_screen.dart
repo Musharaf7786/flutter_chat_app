@@ -1,15 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/Screens/Auth/login_screen.dart';
+import 'package:flutter_chat_app/screens/users_list_screen.dart';
+import 'package:flutter_chat_app/services/google_services.dart';
 
-import 'package:flutter_chat_app/Screens/users_list_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'Auth/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
-  // final UserModel userModel;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -37,25 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.more_vert, color: Colors.white),
 
             onSelected: (value) {
-              // if (value == "profile") {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder:
-              //           (context) => ProfileEditScreen(
-              //             isComingFromLoginOrSignUp: false,
-              //             userModel: widget.userModel,
-              //           ),
-              //     ),
-              //   );
-              // } else
               if (value == "logout") {
                 showLogOutPopUp();
               }
             },
             itemBuilder:
                 (BuildContext context) => [
-                  // const PopupMenuItem(value: "profile", child: Text("Profile")),
                   const PopupMenuItem(value: "logout", child: Text("Logout")),
                 ],
           ),
@@ -93,13 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      await prefs.clear();
-                      await deleteDBOnLogOut();
-
+                    onPressed: () {
+                      GoogleSignInServices.signOut();
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -136,35 +114,4 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-
-  Future<void> deleteDBOnLogOut() async {
-    try {
-      final firebaseFireStore = FirebaseFirestore.instance;
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user == null) return;
-
-      final docRef = firebaseFireStore.collection("users").doc(user.uid);
-
-      final docSnapshot = await docRef.get();
-      if (docSnapshot.exists) {
-        await docRef.delete();
-        print("User data deleted for UID: ${user.uid}");
-      } else {
-        print("No document found for UID: ${user.uid}");
-      }
-    } catch (e) {
-      print("Error deleting user data: $e");
-    }
-  }
-
-  // deleteDBOnLogOut() async {
-  //   FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) {
-  //     return null;
-  //   } else {
-  //     await firebaseFireStore.collection("users").doc(user.uid).delete();
-  //   }
-  // }
 }

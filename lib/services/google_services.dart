@@ -30,13 +30,13 @@ class GoogleSignInServices {
 
       final accessToken = authorization?.accessToken;
       if (accessToken == null) {
-        final autherization2 = await authorizationClient.authorizationForScopes(
+        final authorization2 = await authorizationClient.authorizationForScopes(
           ['email', 'profile'],
         );
-        if (autherization2?.accessToken == null) {
+        if (authorization2?.accessToken == null) {
           throw FirebaseAuthException(code: 'error', message: 'error');
         }
-        authorization = autherization2;
+        authorization = authorization2;
       }
       final credential = GoogleAuthProvider.credential(
         accessToken: accessToken,
@@ -71,7 +71,7 @@ class GoogleSignInServices {
       await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

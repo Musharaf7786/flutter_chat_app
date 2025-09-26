@@ -1,13 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/Screens/Auth/register_screen.dart';
-import 'package:flutter_chat_app/Screens/profile_edit_screen.dart';
-import 'package:flutter_chat_app/models/user_model.dart';
-import 'package:flutter_chat_app/services/google_services.dart';
+import 'package:flutter_chat_app/screens/Auth/register_screen.dart';
 import 'package:flutter_chat_app/widgets/custom_toast_service.dart';
 import 'package:flutter_chat_app/widgets/elevated_button.dart';
-
 import '../home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -168,20 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       login();
                     },
                   ),
-
-                  Image.asset("assets/images/or_divider.png"),
-
-                  isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : MyElevatedButton(
-                        text: "Sign up with Google",
-                        backgroundColor: const Color(0xFF573894),
-                        borderRadius: 30,
-                        onPressed: () {
-                          signupWithGoogle();
-                        },
-                      ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -212,80 +194,20 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailTextController.text;
     String psw = passwordTextController.text;
 
-    print("Email :$email   >>> Password : $psw");
-
     FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: psw)
         .then((value) async {
-          UserModel? userModel;
-          userModel = await getUserDetailsFromDb();
+          if (!mounted) return;
 
+          ToastService.showSuccess(context, "User Logged In Successfully");
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder:
-          //         (context) => ProfileEditScreen(
-          //           isComingFromLoginOrSignUp: true,
-          //           userModel: userModel!,
-          //         ),
-          //   ),
-          // );
         })
         .catchError((e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("User Login failed$e"),
-              showCloseIcon: true,
-              backgroundColor: Color(0xFF573894),
-            ),
-          );
+          if (!mounted) return;
+          ToastService.showError(context, "User Login failed $e");
         });
-  }
-
-  Future<void> signupWithGoogle() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final userCredentials = await GoogleSignInServices.signInWithGoogle();
-      if (!mounted) return;
-      if (userCredentials != null) {
-        if (!mounted) return;
-        ToastService.showSuccess(context, "User Logged in successfully!");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ToastService.showError(context, "$e");
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
-  }
-
-  Future<UserModel?> getUserDetailsFromDb() async {
-    FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
-
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return null;
-    }
-    DocumentSnapshot<Map<String, dynamic>> snapshot =
-        await firebaseFireStore.collection("users").doc(user.uid).get();
-    if (snapshot.exists) {
-      return UserModel.fromMap(snapshot.data()!);
-    } else {
-      return null;
-    }
   }
 }

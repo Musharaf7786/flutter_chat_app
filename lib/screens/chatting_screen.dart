@@ -45,6 +45,7 @@ class ChattingScreen extends StatelessWidget {
 
                       controller: messageController,
                       keyboardType: TextInputType.multiline,
+
                       decoration: InputDecoration(
                         suffixIcon: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -85,7 +86,8 @@ class ChattingScreen extends StatelessWidget {
                         ),
                         errorMaxLines: 2,
                       ),
-                      maxLines: 1,
+                      maxLines: null,
+                      minLines: 1,
                     ),
                   ),
                   // SizedBox(width: 2,),

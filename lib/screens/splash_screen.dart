@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/Screens/home_screen.dart';
-import '../models/user_model.dart';
-import 'Auth/login_screen.dart';
+import 'auth_select_screen.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,58 +20,38 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Animation Controller
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
 
-    // Scale (pop-in) animation
     _scaleAnimation = Tween<double>(
       begin: 0.8,
       end: 1.2,
     ).chain(CurveTween(curve: Curves.easeInOut)).animate(_controller);
 
-    // Fade-in animation
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    // Start repeating animation (pulse effect)
     _controller.repeat(reverse: true);
 
     Future.delayed(const Duration(seconds: 3), () async {
       if (FirebaseAuth.instance.currentUser == null) {
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          MaterialPageRoute(builder: (context) => const AuthSelectScreen()),
         );
       } else {
-        UserModel? userModel;
-        userModel = await getUserDetailsFromDb();
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       }
     });
-  }
-
-  Future<UserModel?> getUserDetailsFromDb() async {
-    FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
-
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      return null;
-    }
-    DocumentSnapshot<Map<String, dynamic>> snapshot =
-        await firebaseFireStore.collection("users").doc(user.uid).get();
-    if (snapshot.exists) {
-      return UserModel.fromMap(snapshot.data()!);
-    } else {
-      return null;
-    }
   }
 
   @override
