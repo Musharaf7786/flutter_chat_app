@@ -2,16 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/Screens/Auth/login_screen.dart';
-import 'package:flutter_chat_app/Screens/profile_edit_screen.dart';
+
 import 'package:flutter_chat_app/Screens/users_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user_model.dart';
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.userModel});
+  const HomeScreen({super.key});
 
-  final UserModel userModel;
+  // final UserModel userModel;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -39,24 +37,25 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.more_vert, color: Colors.white),
 
             onSelected: (value) {
-              if (value == "profile") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => ProfileEditScreen(
-                          isComingFromLoginOrSignUp: false,
-                          userModel: widget.userModel,
-                        ),
-                  ),
-                );
-              } else if (value == "logout") {
+              // if (value == "profile") {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder:
+              //           (context) => ProfileEditScreen(
+              //             isComingFromLoginOrSignUp: false,
+              //             userModel: widget.userModel,
+              //           ),
+              //     ),
+              //   );
+              // } else
+              if (value == "logout") {
                 showLogOutPopUp();
               }
             },
             itemBuilder:
                 (BuildContext context) => [
-                  const PopupMenuItem(value: "profile", child: Text("Profile")),
+                  // const PopupMenuItem(value: "profile", child: Text("Profile")),
                   const PopupMenuItem(value: "logout", child: Text("Logout")),
                 ],
           ),

@@ -12,7 +12,20 @@
           "package_name": "com.musharafchatapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "618568288928-k3loooo60jqinfhd4ag59s8sgui43b6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.musharafchatapp",
+            "certificate_hash": "1e10824845e07c516774c11a68f49ef1dd9540b9"
+          }
+        },
+        {
+          "client_id": "618568288928-d7745pevfmbc9hg3n5hd7qpal1c6fftf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAfxkj8pFCyu79QL4wWvielLo0TD85ioEw"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618568288928-d7745pevfmbc9hg3n5hd7qpal1c6fftf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

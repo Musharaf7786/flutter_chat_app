@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/Screens/Auth/register_screen.dart';
 import 'package:flutter_chat_app/Screens/profile_edit_screen.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
+import 'package:flutter_chat_app/services/google_services.dart';
+import 'package:flutter_chat_app/widgets/custom_toast_service.dart';
 import 'package:flutter_chat_app/widgets/elevated_button.dart';
 
 import '../home_screen.dart';
@@ -19,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
   bool showPsw = false;
+  bool isLoading = false;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
@@ -166,6 +169,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
 
+                  Image.asset("assets/images/or_divider.png"),
+
+                  isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : MyElevatedButton(
+                        text: "Sign up with Google",
+                        backgroundColor: const Color(0xFF573894),
+                        borderRadius: 30,
+                        onPressed: () {
+                          signupWithGoogle();
+                        },
+                      ),
                   SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
@@ -207,14 +222,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder:
-                  (context) => ProfileEditScreen(
-                    isComingFromLoginOrSignUp: true,
-                    userModel: userModel!,
-                  ),
-            ),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
           );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder:
+          //         (context) => ProfileEditScreen(
+          //           isComingFromLoginOrSignUp: true,
+          //           userModel: userModel!,
+          //         ),
+          //   ),
+          // );
         })
         .catchError((e) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -225,6 +244,33 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         });
+  }
+
+  Future<void> signupWithGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final userCredentials = await GoogleSignInServices.signInWithGoogle();
+      if (!mounted) return;
+      if (userCredentials != null) {
+        if (!mounted) return;
+        ToastService.showSuccess(context, "User Logged in successfully!");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ToastService.showError(context, "$e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   Future<UserModel?> getUserDetailsFromDb() async {

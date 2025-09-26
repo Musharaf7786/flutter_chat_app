@@ -5,6 +5,7 @@ import 'package:flutter_chat_app/Screens/Auth/login_screen.dart';
 import 'package:flutter_chat_app/Screens/home_screen.dart';
 import 'package:flutter_chat_app/Screens/profile_edit_screen.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../widgets/elevated_button.dart';
 
@@ -133,9 +134,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   backgroundColor: const Color(0xFF573894),
                   borderRadius: 30,
                   onPressed: () {
-                    register();
+                    registerWithEmail();
                   },
                 ),
+
                 SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
@@ -160,17 +162,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  register() {
+  registerWithEmail() {
     String email = emailTextController.text;
     String psw = passwordTextController.text;
-
-    print("Email :$email   >>> Password : $psw");
 
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: psw)
         .then((value) {
-          goToProfileEditScreen();
-          // postDetailsToFireStoreDB();
+          // goToProfileEditScreen();
+          postDetailsToFireStoreDB();
         })
         .catchError((e) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -214,28 +214,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         .doc(user?.uid)
         .set(userModel.toMap());
 
-    // ScaffoldMessenger.of(
-    //   context,
-    // ).showSnackBar(SnackBar(content: Text("Account created Successfully")));
-    ScaffoldMessenger.of(context).showMaterialBanner(
-      MaterialBanner(
-        backgroundColor: Colors.green.shade300,
-        content: Text(
-          "Account Created Successfully",
-          style: TextStyle(color: Colors.white),
-        ),
-        actions: [SizedBox()],
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Account created Successfully")));
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder:
-            (context) => ProfileEditScreen(
-              isComingFromLoginOrSignUp: true,
-              userModel: userModel,
-            ),
-      ),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 }

@@ -395,9 +395,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(userModel: widget.userModel),
-      ),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 
@@ -426,7 +424,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(userModel: userModel)),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 
@@ -453,7 +451,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(userModel: userModel)),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 

@@ -1,0 +1,81 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class GoogleSignInServices {
+  static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+
+  static bool isInitialize = false;
+
+  static Future<void> initSignIn() async {
+    if (!isInitialize) {
+      await _googleSignIn.initialize(
+        serverClientId:
+            "618568288928-d7745pevfmbc9hg3n5hd7qpal1c6fftf.apps.googleusercontent.com",
+      );
+    }
+    isInitialize = true;
+  }
+
+  static Future<UserCredential?> signInWithGoogle() async {
+    try {
+      initSignIn();
+      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+      final idToken = googleUser.authentication.idToken;
+      final authorizationClient = googleUser.authorizationClient;
+
+      GoogleSignInClientAuthorization? authorization = await authorizationClient
+          .authorizationForScopes(['email', 'profile']);
+
+      final accessToken = authorization?.accessToken;
+      if (accessToken == null) {
+        final autherization2 = await authorizationClient.authorizationForScopes(
+          ['email', 'profile'],
+        );
+        if (autherization2?.accessToken == null) {
+          throw FirebaseAuthException(code: 'error', message: 'error');
+        }
+        authorization = autherization2;
+      }
+      final credential = GoogleAuthProvider.credential(
+        accessToken: accessToken,
+        idToken: idToken,
+      );
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithCredential(credential);
+      final User? user = userCredential.user;
+      if (user != null) {
+        final userDoc = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid);
+        final docSnapShot = await userDoc.get();
+        if (!docSnapShot.exists) {
+          await userDoc.set({
+            'uid': user.uid,
+            'email': user.email ?? '',
+            'name': user.email!.split("@")[0],
+            'timeStamp': FieldValue.serverTimestamp(),
+          });
+        }
+      }
+      return userCredential;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  static Future<void> signOut() async {
+    try {
+      await _googleSignIn.signOut();
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static User? getCurrentUser() {
+    return _firebaseAuth.currentUser;
+  }
+}
