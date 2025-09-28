@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/models/room_model.dart';
 import 'package:flutter_chat_app/widgets/chat_item.dart';
 
 class ChattingScreen extends StatelessWidget {
-  ChattingScreen({super.key});
+  final RoomModel roomModel;
+
+  ChattingScreen(this.roomModel, {super.key});
 
   final messageController = TextEditingController();
 
@@ -23,7 +26,7 @@ class ChattingScreen extends StatelessWidget {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return ChatItem();
+                  return ChatItem(index);
                 },
               ),
             ),

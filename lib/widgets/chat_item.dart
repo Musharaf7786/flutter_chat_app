@@ -1,52 +1,66 @@
 import 'package:flutter/material.dart';
 
-class ChatItem extends StatefulWidget {
-  const ChatItem({super.key});
+class ChatItem extends StatelessWidget {
+  int index;
 
-  @override
-  State<ChatItem> createState() => _ChatItemState();
-}
+  ChatItem(this.index, {super.key});
 
-class _ChatItemState extends State<ChatItem> {
+  bool left = false;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+    if (index % 2 == 0) {
+      left = true;
+    } else {
+      left = false;
+    }
+    return Row(
+      mainAxisAlignment: left ? MainAxisAlignment.start : MainAxisAlignment.end,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width / 2,
+          padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            color: Color(0xFF573894),
-            borderRadius: BorderRadius.circular(9),
+            color: left ? Colors.black12 : Color(0xFF573894),
+            borderRadius: BorderRadius.circular(30),
           ),
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.5,
           ),
           child: Column(
+            crossAxisAlignment:
+                left ? CrossAxisAlignment.start : CrossAxisAlignment.end,
             children: [
               Text(
                 "Your message will show here",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "09:43 AM",
-                      style: TextStyle(color: Colors.white, fontSize: 10),
-                    ),
-                    SizedBox(width: 3),
-                    Icon(Icons.done_all, color: Colors.grey, size: 13),
-                  ],
+                style: TextStyle(
+                  color: left ? Colors.black : Colors.white,
+                  fontSize: 12,
                 ),
               ),
+              left
+                  ? Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "09:43 AM",
+                      style: TextStyle(color: Colors.black, fontSize: 10),
+                    ),
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "09:43 AM",
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(Icons.done_all, color: Colors.grey, size: 13),
+                    ],
+                  ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

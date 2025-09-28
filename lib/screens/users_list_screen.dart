@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/models/room_model.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
 
 import 'chatting_screen.dart';
@@ -12,6 +14,8 @@ class UsersListScreen extends StatefulWidget {
 }
 
 class _UsersListScreenState extends State<UsersListScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,18 +43,16 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   UserModel userModel = UserModel.fromMap(
                     snapshot.data!.docs[index].data(),
                   );
+                  if (userModel.uid == FirebaseAuth.instance.currentUser!.uid) {
+                    return SizedBox();
+                  }
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Card(
                       color: Color(0xFF573894),
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChattingScreen(),
-                            ),
-                          );
+                          checkAndCreateNewRoom(userModel);
                         },
                         title: Text(
                           userModel.email!,
@@ -74,6 +76,45 @@ class _UsersListScreenState extends State<UsersListScreen> {
           }
         },
       ),
+    );
+  }
+
+  String createRoomId(UserModel toChatUserModel) {
+    String roomId = '';
+
+    if (user!.uid.hashCode > toChatUserModel.uid.hashCode) {
+      roomId = "${toChatUserModel.uid}_${user!.uid}";
+    } else if (user!.uid.hashCode < toChatUserModel.uid.hashCode) {
+      roomId = "${user!.uid}_${toChatUserModel.uid!}";
+    } else {
+      roomId = "${user!.uid}_${toChatUserModel.uid!}";
+    }
+    return roomId;
+  }
+
+  checkAndCreateNewRoom(UserModel toChatUserModel) async {
+    String roomId = createRoomId(toChatUserModel);
+    CollectionReference roomCollectionReference = FirebaseFirestore.instance
+        .collection("rooms");
+    DocumentSnapshot documentSnapshot =
+        await roomCollectionReference.doc(roomId).get();
+
+    RoomModel roomModel = RoomModel();
+    if (documentSnapshot.exists) {
+      roomModel = RoomModel.fromMap(
+        documentSnapshot.data() as Map<String, dynamic>,
+      );
+    } else {
+      roomModel.peerId = toChatUserModel.uid;
+      roomModel.participantsList = [];
+      roomModel.participantsList!.add(toChatUserModel.uid);
+      roomModel.participantsList!.add(user!.uid);
+      await roomCollectionReference.doc(roomId).set(roomModel.toMap());
+    }
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChattingScreen(roomModel)),
     );
   }
 }
