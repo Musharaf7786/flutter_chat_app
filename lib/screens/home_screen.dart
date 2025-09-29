@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/screens/users_list_screen.dart';
 import 'package:flutter_chat_app/services/google_services.dart';
+import 'package:provider/provider.dart';
 
+import '../services/theme_provider_service.dart';
+import '../widgets/custom_switch_widget.dart';
 import 'Auth/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xFF573894),
@@ -29,6 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Color(0xFF573894),
         actions: [
+          SizedBox(
+            width: 55,
+            height: 30,
+            child: CustomSwitch(
+              value: themeProvider.isDarkMode,
+              onChanged: (val) {
+                themeProvider.toggleTheme(val);
+              },
+            ),
+          ),
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: Colors.white),
 

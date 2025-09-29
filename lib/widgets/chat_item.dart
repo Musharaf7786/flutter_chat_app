@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../services/theme_provider_service.dart';
 
 class ChatItem extends StatelessWidget {
   int index;
@@ -9,6 +12,7 @@ class ChatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     if (index % 2 == 0) {
       left = true;
     } else {
@@ -21,7 +25,10 @@ class ChatItem extends StatelessWidget {
           width: MediaQuery.of(context).size.width / 2,
           padding: EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            color: left ? Colors.black12 : Color(0xFF573894),
+            color:
+                !left
+                    ? Color(0xFF573894)
+                    : (themeProvider.isDarkMode ? Colors.grey : Colors.black12),
             borderRadius: BorderRadius.circular(30),
           ),
           constraints: BoxConstraints(
@@ -34,7 +41,13 @@ class ChatItem extends StatelessWidget {
               Text(
                 "Your message will show here",
                 style: TextStyle(
-                  color: left ? Colors.black : Colors.white,
+                  color:
+                      !left
+                          ? Colors.white
+                          : (themeProvider.isDarkMode
+                              ? Colors.black
+                              : Colors.black),
+
                   fontSize: 12,
                 ),
               ),
@@ -43,7 +56,13 @@ class ChatItem extends StatelessWidget {
                     alignment: Alignment.bottomRight,
                     child: Text(
                       "09:43 AM",
-                      style: TextStyle(color: Colors.black, fontSize: 10),
+                      style: TextStyle(
+                        color:
+                            themeProvider.isDarkMode
+                                ? Colors.black
+                                : Colors.black,
+                        fontSize: 10,
+                      ),
                     ),
                   )
                   : Row(

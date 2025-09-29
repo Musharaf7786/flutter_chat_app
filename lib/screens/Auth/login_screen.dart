@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/screens/Auth/register_screen.dart';
+import 'package:flutter_chat_app/services/theme_provider_service.dart';
 import 'package:flutter_chat_app/widgets/custom_toast_service.dart';
 import 'package:flutter_chat_app/widgets/elevated_button.dart';
+import 'package:provider/provider.dart';
 import '../home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -47,13 +50,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.email_outlined,
-                        color: Colors.black45,
+                        color:
+                            themeProvider.isDarkMode
+                                ? Colors.white38
+                                : Colors.black45,
                       ),
 
                       label: RichText(
                         text: TextSpan(
                           text: "Email",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color:
+                                themeProvider.isDarkMode
+                                    ? Colors.white38
+                                    : Colors.black45,
+                          ),
                           children: <TextSpan>[
                             TextSpan(
                               text: ' *',
@@ -99,13 +110,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.lock_outline,
-                        color: Colors.black45,
+                        color:
+                            themeProvider.isDarkMode
+                                ? Colors.white38
+                                : Colors.black45,
                       ),
 
                       label: RichText(
                         text: TextSpan(
                           text: "Password",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(
+                            color:
+                                themeProvider.isDarkMode
+                                    ? Colors.white38
+                                    : Colors.black45,
+                          ),
                           children: <TextSpan>[
                             TextSpan(
                               text: ' *',

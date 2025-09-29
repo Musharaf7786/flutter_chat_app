@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/models/user_model.dart';
 import 'package:flutter_chat_app/widgets/custom_toast_service.dart';
+import 'package:provider/provider.dart';
+import '../../services/theme_provider_service.dart';
 import '../../widgets/elevated_button.dart';
 import '../home_screen.dart';
 import 'login_screen.dart';
@@ -23,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -47,13 +50,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.email_outlined,
-                      color: Colors.black45,
+                      color:
+                          themeProvider.isDarkMode
+                              ? Colors.white38
+                              : Colors.black45,
                     ),
 
                     label: RichText(
                       text: TextSpan(
                         text: "Email",
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                          color:
+                              themeProvider.isDarkMode
+                                  ? Colors.white38
+                                  : Colors.black45,
+                        ),
                         children: <TextSpan>[
                           TextSpan(
                             text: ' *',
@@ -96,7 +107,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: passwordTextController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock_outline, color: Colors.black45),
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color:
+                          themeProvider.isDarkMode
+                              ? Colors.white38
+                              : Colors.black45,
+                    ),
 
                     suffixIcon: IconButton(
                       onPressed: () {
@@ -115,7 +132,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     label: RichText(
                       text: TextSpan(
                         text: "Password",
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                          color:
+                              themeProvider.isDarkMode
+                                  ? Colors.white38
+                                  : Colors.black45,
+                        ),
                         children: <TextSpan>[
                           TextSpan(
                             text: ' *',
@@ -158,7 +180,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: confirmPasswordTextController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock_outline, color: Colors.black45),
+                    prefixIcon: Icon(
+                      Icons.lock_outline,
+                      color:
+                          themeProvider.isDarkMode
+                              ? Colors.white38
+                              : Colors.black45,
+                    ),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -176,7 +204,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     label: RichText(
                       text: TextSpan(
                         text: "Confirm Password",
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(
+                          color:
+                              themeProvider.isDarkMode
+                                  ? Colors.white38
+                                  : Colors.black45,
+                        ),
                         children: <TextSpan>[
                           TextSpan(
                             text: ' *',
